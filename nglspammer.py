@@ -59,7 +59,6 @@ no_answer = ["N", "n", "no"]
 counter = 0
 counter_lock = threading.Lock()  # ใช้ล็อกเวลานับ counter ให้ปลอดภัยใน thread
 
-# Check tor
 def load_proxies(file_path):
     proxies_list = []
     try:
@@ -144,7 +143,6 @@ def start_threads(username, message, thread_count, proxy_list=None, use_tor=Fals
     for t in threads:
         t.join()
 
-# ตัวอย่างเรียกใช้
 if __name__ == "__main__":
     banner()
     ua_path = os.path.join("user_agent", "user_agent_lists.txt")
