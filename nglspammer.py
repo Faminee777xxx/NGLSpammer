@@ -48,7 +48,7 @@ def banner():
 | | |   ||       |  |   |    |   |_| ||       || | |   || | |   ||   _   |  |       ||   | |   |___ 
 |_|  |__||_______|  |___|    |_______||_______||_|  |__||_|  |__||__| |__|  |_______||___| |_______|!!!
 [{back_colors['green']}NGL-Spammer{back_colors['reset']}]>V.1
-[{back_colors['green']}Github{back_colors['reset']}]: 
+[{back_colors['green']}Github{back_colors['reset']}]: {styles['bright']}https://github.com/Faminee777xxx/NGLSpammer{styles['reset']}
 
     """)
     
