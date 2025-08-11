@@ -1,3 +1,5 @@
+![NGLSpammer](Img/nglspammer.png)
+
 ## (README English)
 # NGLSpammer
 # 📩 NGL Spammer Tool (Version 1)
@@ -26,6 +28,9 @@ python ngl_spammer.py
 ```
 pip install requests pysocks colorama
 ```
+
+
+
 
 ## (README ภาษาไทย)
 **Do not** use this to harass, spam, or attack real people without consent.  
