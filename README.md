@@ -4,18 +4,11 @@
 # NGLSpammer
 # 📩 NGL Spammer Tool (Version 1)
 
-A Python script for **sending automated messages** to an NGL profile.  
-Supports **multi-threading**, **proxy lists**, and **Tor network** to bypass rate limits.  
-⚠ For **educational and testing purposes only**.
+A Python script for automatically sending messages to an NGL profile.
+Supports multi-threading, proxy lists, and the Tor network to help bypass message rate limits.
+
 
 ---
-
-## ⚠ Disclaimer
-This program is designed **only** for testing and educational use, such as:
-- Learning about HTTP requests
-- Understanding threading in Python
-- Studying how proxies and Tor work
-
 ## Usage
 Run the program
 ```
@@ -28,14 +21,12 @@ python ngl_spammer.py
 ```
 pip install requests pysocks colorama
 ```
-
+**Use for fun**
+The developer takes **no responsibility** for misuse of this tool.
 
 
 
 ## (README ภาษาไทย)
-**Do not** use this to harass, spam, or attack real people without consent.  
-The developer takes **no responsibility** for misuse of this tool.
-
 # NGLSpammer
 # 📩 เครื่องมือส่งข้อความอัตโนมัติ NGL (เวอร์ชัน 1)
 
@@ -54,5 +45,5 @@ python ngl_spammer.py
 pip install requests pysocks colorama
 ```
 
-# ห้ามใช้โปรแกรมนี้เพื่อรบกวน, ส่งสแปมหรือโจมตีผู้อื่นโดยไม่ได้รับอนุญาต
+# ใช้เล่นขําๆ, หรือแกล้ง
 ผู้พัฒนาไม่รับผิดชอบต่อการใช้งานในทางที่ผิดใด ๆ ทั้งสิ้น
