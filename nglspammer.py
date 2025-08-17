@@ -1,6 +1,7 @@
 import requests
 import time
 import random
+import socks
 import os, sys
 from datetime import datetime
 import threading
@@ -52,13 +53,18 @@ def banner():
 
     """)
     
-tor_answer = ["T", "t", "tor"]
-proxy_answer = ["P", "p", "proxy"]
-no_answer = ["N", "n", "no"]
+tor_answer = ["t", "tor"]
+proxy_answer = ["p", "proxy"]
+no_answer = ["n", "no"]
 
 counter = 0
 counter_lock = threading.Lock()  # ใช้ล็อกเวลานับ counter ให้ปลอดภัยใน thread
 
+def datet():
+    date = datetime.now().strftime("%H:%M")
+    return date
+
+# Check tor
 def load_proxies(file_path):
     proxies_list = []
     try:
@@ -70,11 +76,33 @@ def load_proxies(file_path):
     except FileNotFoundError:
         print(f"[{back_colors['red']}!{back_colors['reset']}] {styles['bright']}Proxy file {file_path} not found.{styles['reset']}")
     return proxies_list
+
+# def save_log(target_name, log, threads, mode):
+#     file_output_name = f"{target_name}_log"
     
+
+#     folder_output_name = "logs"
+#     os.makedirs(folder_output_name, exist_ok=True)
+    
+#     file_path = os.path.join(folder_output_name, f"{file_output_name}.txt")
+    
+#     try:
+#         with open(file_path, "a", encoding="utf8") as file:
+#             file.write(f"{file_output_name}\n")
+#             file.write(f"Threads: {threads}\n")
+#             file.write(f"Mode: {mode}\n")
+#             file.write("-----------------------------------\n")
+#             file.write(f"{log}\n\n")
+#     except Exception as e:
+#         print(f"[{back_colors['red']}Error{back_colors['reset']}] {styles['bright']}{e}{styles['reset']}")
+        
+            
+
+
 def random_device_id(length=21):
     return ''.join(random.choice('0123456789abcdef') for _ in range(length * 2))
          
-def send_message(username, message, proxy_list=None, use_tor=False):
+def send_message(username, message, proxy_list=None, use_tor=None):
     global counter
     url = "https://ngl.link/api/submit"
 
@@ -93,7 +121,7 @@ def send_message(username, message, proxy_list=None, use_tor=False):
 
     while True:
         try:
-            now = datetime.now().strftime("%H:%M")
+            now = datet()
             device_id = random_device_id()
 
             data = {
@@ -121,18 +149,22 @@ def send_message(username, message, proxy_list=None, use_tor=False):
             response = requests.post(url, headers=headers, data=data, timeout=10, proxies=proxies)
 
             if response.status_code != 200:
-                print(f"[{back_colors['cyan']}{now}{back_colors['reset']}] [{back_colors['red']}Err{back_colors['reset']}] {styles['bright']}Ratelimited or blocked{styles['reset']}")
+                a = f"[{back_colors['cyan']}{now}{back_colors['reset']}] [{back_colors['red']}Err{back_colors['reset']}] {styles['bright']}Ratelimited or blocked{styles['reset']}"
+                print(a)
                 time.sleep(25)
             else:
                 with counter_lock:
                     counter += 1
-                    print(f"[{back_colors['cyan']}{now}{back_colors['reset']}] [{back_colors['green']}Msg{back_colors['reset']}] Sent: {styles['bright']}{counter}{styles['reset']}")
+                    a = f"[{back_colors['cyan']}{now}{back_colors['reset']}] [{back_colors['green']}Msg{back_colors['reset']}] Sent: {styles['bright']}{counter}{styles['reset']}"
+                    print(a)
+
+            
 
         except Exception as e:
-            print(f"[{back_colors['cyan']}{now}{back_colors['reset']}] [{back_colors['red']}Err{back_colors['reset']}] {styles['bright']}{e}{styles['reset']}")
+            a = f"[{back_colors['cyan']}{now}{back_colors['reset']}] [{back_colors['red']}Err{back_colors['reset']}] {styles['bright']}{e}{styles['reset']}"
             time.sleep(5)
 
-def start_threads(username, message, thread_count, proxy_list=None, use_tor=False):
+def start_threads(username, message, thread_count, proxy_list=None, use_tor=None):
     threads = []
     for _ in range(thread_count):
         t = threading.Thread(target=send_message, args=(username, message, proxy_list, use_tor))
@@ -142,6 +174,22 @@ def start_threads(username, message, thread_count, proxy_list=None, use_tor=Fals
 
     for t in threads:
         t.join()
+
+# Check tor
+def check_tor_running(ip="127.0.0.1", port=9050):
+    print(f"\n[{back_colors['green']}+{back_colors['reset']}] Checking TOR..")
+    try:
+        s = socks.socksocket()
+        s.set_proxy(socks.SOCKS5, ip, port)
+        s.settimeout(5)
+        # ลองเชื่อมต่อไปที่ onion service ที่รู้จัก (DuckDuckGo)
+        s.connect(("duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion", 80))
+        s.close()
+        print(f"[{back_colors['green']}!{back_colors['reset']}] {styles['bright']}Tor is running!!.. 127.0.0.1:9050 {styles['reset']}")
+        return True
+    except Exception as e:
+        print(f"[{back_colors['red']}!{back_colors['reset']}] {styles['bright']}Tor is not running or not reachable: {e}{styles['reset']}")
+        exit()
 
 if __name__ == "__main__":
     banner()
@@ -164,10 +212,13 @@ if __name__ == "__main__":
     else:
         pass
 
-    use_proxy_or_t = input(f"[{back_colors['magenta']}#{back_colors['reset']}] {styles['bright']}Proxy, Tor or No (P/T/N){styles['reset']}: ").strip().lower()
+    use_proxy_or_t = str(input(f"[{back_colors['magenta']}#{back_colors['reset']}] {styles['bright']}Proxy, Tor or No (P/T/N){styles['reset']}: ")).strip().lower()
+
     if use_proxy_or_t in tor_answer:
         use_tor = True
         proxy_list = None
+
+        check_tor_running()
     elif use_proxy_or_t in proxy_answer:
         use_tor = False
         proxy_file_input = input(f"[{back_colors['green']}+] {styles['bright']}File proxies.txt{styles['reset']}: ")
@@ -181,4 +232,7 @@ if __name__ == "__main__":
 
     print(f"[{back_colors['yellow']}!{back_colors['reset']}] Ctrl+C to {styles['bright']}EXIT{styles['reset']}\n")
     time.sleep(1)
+    
     start_threads(username, message, thread_count, proxy_list, use_tor)
+    if KeyboardInterrupt:
+        exit()
